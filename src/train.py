@@ -4,6 +4,7 @@ import joblib
 import tensorflow as tf
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from src.logger import logger
 
 from src.preprocess import preprocess
 from sklearn.tree import DecisionTreeClassifier
@@ -17,6 +18,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 
 def train_decision_tree(X_train, y_train, X_test, y_test):
     print("\n--- Training Decision Tree ---")
+    logger.info("Starting Decision Tree training")
 
     param_grid = {
         'max_depth': [5, 10, 15, None],
@@ -34,6 +36,7 @@ def train_decision_tree(X_train, y_train, X_test, y_test):
 
     predictions = best_dt.predict(X_test)
     print(f"Accuracy : {accuracy_score(y_test, predictions):.4f}")
+    logger.info(f"Decision Tree - Accuracy: {accuracy_score(y_test, predictions):.4f}, F1: {f1_score(y_test, predictions):.4f}")
     print(f"Precision: {precision_score(y_test, predictions):.4f}")
     print(f"Recall   : {recall_score(y_test, predictions):.4f}")
     print(f"F1 Score : {f1_score(y_test, predictions):.4f}")
@@ -44,6 +47,7 @@ def train_decision_tree(X_train, y_train, X_test, y_test):
 
 def train_neural_network(X_train, y_train, X_val, y_val, X_test, y_test):
     print("\n--- Training Neural Network ---")
+    logger.info("Starting Neural Network training")
 
     model = Sequential([
         Dense(64, activation='relu', input_shape=(X_train.shape[1],)),
@@ -93,3 +97,4 @@ if __name__ == "__main__":
     joblib.dump(scaler, "models/scaler.pkl")
 
     print("\n✅ All models saved to models/ folder.")
+    logger.info("All models saved successfully")

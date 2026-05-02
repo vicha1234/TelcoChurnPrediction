@@ -4,6 +4,8 @@ import pandas as pd
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+from src.logger import logger
+
 app = FastAPI(title="Telco Churn Prediction API")
 
 # Load model and scaler when server starts
@@ -44,6 +46,7 @@ def home():
 
 @app.get("/health")
 def health_check():
+    logger.info("Health check called")
     return {"status": "ok"}
 
 
@@ -86,6 +89,7 @@ def predict(customer: CustomerData):
     prediction = model.predict(df)[0]
     probability = model.predict_proba(df)[0][1]
 
+    logger.info(f"Prediction made - churn: {int(prediction)}, probability: {round(float(probability), 3)}")
     return {
         "churn_prediction": int(prediction),
         "churn_probability": round(float(probability), 3),
