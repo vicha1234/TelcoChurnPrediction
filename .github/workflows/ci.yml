@@ -1,0 +1,32 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Check preprocessing loads correctly
+      run: python -c "from src.preprocess import preprocess; print('✅ Preprocessing import OK')"
+
+    - name: Check train imports correctly
+      run: python -c "from src.train import train_decision_tree; print('✅ Train import OK')"
+
+    - name: Check predict imports correctly
+      run: python -c "from src.predict import predict_churn; print('✅ Predict import OK')"
